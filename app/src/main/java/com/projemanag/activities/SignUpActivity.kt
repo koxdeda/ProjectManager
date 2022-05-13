@@ -2,7 +2,6 @@ package com.projemanag.activities
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.WindowManager
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -19,13 +18,9 @@ class SignUpActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
-        auth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance()
 
-        // This is used to hide the status bar and make the splash screen as a full screen activity.
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+
 
         setupActionBar()
 

@@ -2,24 +2,20 @@ package com.projemanag.activities
 
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
+import androidx.annotation.RequiresApi
 import com.projemanag.R
 import kotlinx.android.synthetic.main.activity_intro.*
 
 class IntroActivity : BaseActivity() {
 
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
 
-        // This is used to hide the status bar and make the splash screen as a full screen activity.
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
 
         val typeface: Typeface =
             Typeface.createFromAsset(assets, "carbon bl.ttf")

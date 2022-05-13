@@ -1,28 +1,22 @@
 package com.projemanag.activities
 
 import android.app.Dialog
-import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
 import com.projemanag.R
 import kotlinx.android.synthetic.main.dialog_progress.*
 
-// TODO (Step 4: Here we have created a BaseActivity Class in which we have added the progress dialog and SnackBar. Now all the activity will extend the BaseActivity instead of AppCompatActivity.)
-// START
+
 open class BaseActivity : AppCompatActivity() {
 
     private var doubleBackToExitPressedOnce = false
 
 
     private lateinit var mProgressDialog: Dialog
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
 
     fun showProgressDialog(text: String) {
@@ -37,9 +31,6 @@ open class BaseActivity : AppCompatActivity() {
         mProgressDialog.dismiss()
     }
 
-    fun getCurrentUserID(): String {
-        return FirebaseAuth.getInstance().currentUser!!.uid
-    }
 
     fun doubleBackToExit() {
         if (doubleBackToExitPressedOnce) {
@@ -54,7 +45,9 @@ open class BaseActivity : AppCompatActivity() {
             Toast.LENGTH_SHORT
         ).show()
 
-        Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
+        Handler(Looper.getMainLooper()).postDelayed({
+            doubleBackToExitPressedOnce = false
+        }, 2000)
     }
 
     fun showErrorSnackBar(message: String) {
@@ -70,4 +63,3 @@ open class BaseActivity : AppCompatActivity() {
         snackBar.show()
     }
 }
-// END

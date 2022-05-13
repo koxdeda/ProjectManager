@@ -1,14 +1,13 @@
 package com.projemanag.activities
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
-import android.view.WindowManager
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.google.firebase.auth.FirebaseAuth
 import com.projemanag.R
-import com.projemanag.model.User
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import kotlinx.android.synthetic.main.activity_sign_in.et_email_signin
 import kotlinx.android.synthetic.main.activity_sign_in.et_password_signin
@@ -18,17 +17,13 @@ class SignInActivity : BaseActivity() {
     private lateinit var auth: FirebaseAuth
 
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
-        auth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance()
 
-        // This is used to hide the status bar and make the splash screen as a full screen activity.
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
 
         btn_sign_in.setOnClickListener {
             signInUser()
@@ -37,7 +32,7 @@ class SignInActivity : BaseActivity() {
         setupActionBar()
     }
 
-    fun signInSuccess(user: User){
+    fun signInSuccess(){
         hideProgressDialog()
         startActivity(Intent(this, MainActivity::class.java))
         finish()
