@@ -6,10 +6,8 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.projemanag.activities.MainActivity
-import com.projemanag.activities.MyProfileActivity
-import com.projemanag.activities.SignInActivity
-import com.projemanag.activities.SignUpActivity
+import com.projemanag.activities.*
+import com.projemanag.model.Board
 import com.projemanag.model.User
 import com.projemanag.utils.Constants
 
@@ -37,8 +35,51 @@ class FirestoreClass {
             }
     }
 
+    fun createBoard(activity: CreateBoardActivity, board: Board){
+        mFireStore.collection(Constants.BOARDS)
+            .document()
+            .set(board, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.e(
+                    activity.javaClass.simpleName,
+                    "Board created successfully",
+                )
+                activity.boardCreatedSuccessfully()
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(
+                    activity.javaClass.simpleName,
+                    "Error writing document",
+                    e
+                )
+            }
+    }
 
-    fun loadUserData(activity: Activity) {
+    fun getBoardsList(activity: MainActivity){
+        mFireStore.collection(Constants.BOARDS)
+            .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserId())
+            .get()
+            .addOnSuccessListener {
+                document ->
+                Log.i(activity.javaClass.simpleName, document.documents.toString())
+                val boardsList: ArrayList<Board> = ArrayList()
+                for (i in document.documents){
+                    val board = i.toObject(Board::class.java)!!
+                    board.documentId = i.id
+                    boardsList.add(board)
+                }
+
+                activity.populateBoardsListToUI(boardsList)
+            }
+            .addOnFailureListener { _ ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error getting boards")
+            }
+    }
+
+
+    fun loadUserData(activity: Activity, readBoardsList: Boolean = false) {
 
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserId())
@@ -53,7 +94,7 @@ class FirestoreClass {
                         activity.signInSuccess()
                     }
                     is MainActivity -> {
-                        activity.updateNavigationUserDetails(loggedInUser)
+                        activity.updateNavigationUserDetails(loggedInUser, readBoardsList)
                     }
                     is MyProfileActivity -> {
                         activity.setUserDataInUI(loggedInUser)

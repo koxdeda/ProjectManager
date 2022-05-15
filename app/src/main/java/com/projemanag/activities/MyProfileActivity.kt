@@ -158,6 +158,9 @@ class MyProfileActivity : BaseActivity() {
         }
     }
 
+    private fun getFileExtension(uri: Uri?): String? {
+        return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri!!))
+    }
 
     private fun uploadUserImage() {
 
@@ -202,9 +205,6 @@ class MyProfileActivity : BaseActivity() {
     }
 
 
-    private fun getFileExtension(uri: Uri?): String? {
-        return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri!!))
-    }
 
     private fun updateUserProfileData() {
 

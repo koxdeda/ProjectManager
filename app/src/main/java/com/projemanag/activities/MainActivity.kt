@@ -5,20 +5,28 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.projemanag.R
+import com.projemanag.adapters.BoardItemsAdapter
 import com.projemanag.firebase.FirestoreClass
+import com.projemanag.model.Board
 import com.projemanag.model.User
+import com.projemanag.utils.Constants
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_name.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+
+    private lateinit var mUserName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -31,8 +39,47 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        FirestoreClass().loadUserData(this)
+        FirestoreClass().loadUserData(this, true)
 
+        fab_create_board.setOnClickListener {
+            val intent = Intent(this, CreateBoardActivity::class.java)
+            intent.putExtra(Constants.NAME, mUserName)
+            resultLauncher1.launch(intent)
+        }
+    }
+
+    private var resultLauncher1 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            FirestoreClass().getBoardsList(this)
+        }else{
+            Log.e("Cancelled", "Cancelled")
+        }
+    }
+
+    fun populateBoardsListToUI(boardsList: ArrayList<Board>){
+        hideProgressDialog()
+
+        if(boardsList.size > 0){
+            rv_boards_list.visibility = View.VISIBLE
+            tv_no_boards.visibility = View.GONE
+
+            rv_boards_list.layoutManager = LinearLayoutManager(this)
+            rv_boards_list.setHasFixedSize(true)
+
+            val adapter = BoardItemsAdapter(this, boardsList)
+            rv_boards_list.adapter = adapter
+
+            adapter.setOnClickListener(object: BoardItemsAdapter.OnClickListener{
+                override fun onClick(position: Int, model: Board) {
+                    startActivity(Intent(this@MainActivity, TaskListActivity::class.java))
+                }
+            })
+
+
+        }else{
+            rv_boards_list.visibility = View.GONE
+            tv_no_boards.visibility = View.VISIBLE
+        }
     }
 
     override fun onBackPressed() {
@@ -45,7 +92,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
 
-    fun updateNavigationUserDetails(user: User){
+    fun updateNavigationUserDetails(user: User, readBoardsList: Boolean){
+
+        mUserName = user.name
+
         Glide
             .with(this)
             .load(user.image)
@@ -54,6 +104,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             .into(iv_user_image)
 
         tv_username.text = user.name
+
+        if(readBoardsList){
+            showProgressDialog(resources.getString(R.string.please_wait))
+            FirestoreClass().getBoardsList(this)
+
+        }
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
@@ -105,17 +161,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        if (resultCode == Activity.RESULT_OK
-//            && requestCode == MY_PROFILE_REQUEST_CODE
-//        ) {
-//            FirestoreClass().loadUserData(this@MainActivity)
-//        } else {
-//            Log.e("Cancelled", "Cancelled")
-//        }
-//    }
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -123,6 +168,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }else{
             Log.e("Cancelled", "Cancelled")
         }
+    }
+
+    companion object{
+        const val CREATE_BOARD_REQUEST_CODE: Int = 12
     }
 
 }
