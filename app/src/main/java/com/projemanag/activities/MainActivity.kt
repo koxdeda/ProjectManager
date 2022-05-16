@@ -71,7 +71,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
             adapter.setOnClickListener(object: BoardItemsAdapter.OnClickListener{
                 override fun onClick(position: Int, model: Board) {
-                    startActivity(Intent(this@MainActivity, TaskListActivity::class.java))
+                    val intent = Intent(this@MainActivity, TaskListActivity::class.java)
+                    intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
+                    startActivity(intent)
                 }
             })
 
@@ -168,10 +170,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }else{
             Log.e("Cancelled", "Cancelled")
         }
-    }
-
-    companion object{
-        const val CREATE_BOARD_REQUEST_CODE: Int = 12
     }
 
 }

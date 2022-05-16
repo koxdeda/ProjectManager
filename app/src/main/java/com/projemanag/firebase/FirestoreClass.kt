@@ -35,6 +35,21 @@ class FirestoreClass {
             }
     }
 
+    fun getBoardDetails(activity: TaskListActivity, documentId: String){
+        mFireStore.collection(Constants.BOARDS)
+            .document(documentId)
+            .get()
+            .addOnSuccessListener {
+                    document ->
+                Log.i(activity.javaClass.simpleName, document.toString())
+                activity.boardDetails(document.toObject(Board::class.java)!!)
+            }
+            .addOnFailureListener {
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error getting boards")
+            }
+    }
+
     fun createBoard(activity: CreateBoardActivity, board: Board){
         mFireStore.collection(Constants.BOARDS)
             .document()
@@ -72,7 +87,7 @@ class FirestoreClass {
 
                 activity.populateBoardsListToUI(boardsList)
             }
-            .addOnFailureListener { _ ->
+            .addOnFailureListener {
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error getting boards")
             }
