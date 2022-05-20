@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.projemanag.R
 import com.projemanag.activities.TaskListActivity
@@ -105,6 +106,45 @@ open class TaskListItemsAdapter(
                 }
             }
 
+            holder.itemView.tv_add_card.setOnClickListener {
+                holder.itemView.tv_add_card.visibility = View.GONE
+                holder.itemView.cv_add_card.visibility = View.VISIBLE
+            }
+
+            holder.itemView.ib_close_card_name.setOnClickListener {
+                holder.itemView.tv_add_card.visibility = View.VISIBLE
+                holder.itemView.cv_add_card.visibility = View.GONE
+            }
+
+            holder.itemView.ib_done_card_name.setOnClickListener {
+                val cardName = holder.itemView
+                    .et_card_name.text.toString()
+
+                if (cardName.isNotEmpty()) {
+                    if (context is TaskListActivity) {
+                        context.addCardToTaskList(position, cardName)
+                    }
+                } else {
+                    Toast.makeText(context, "Please Enter Card Name.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            holder.itemView.rv_card_list.layoutManager =
+                LinearLayoutManager(context)
+            holder.itemView.rv_card_list.setHasFixedSize(true)
+
+            val adapter = CardListItemsAdapter(context, model.cards)
+            holder.itemView.rv_card_list.adapter = adapter
+
+            adapter.setOnClickListener(
+                object: CardListItemsAdapter.OnClickListener{
+                    override fun onClick(position: Int){
+                        if(context is TaskListActivity){
+                            context.cardDetails(position, position)
+                        }
+                    }
+                }
+            )
         }
     }
 
