@@ -21,10 +21,12 @@
         <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/activity_task_list_activite.xml" value="0.1" />
         <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/app_bar_name.xml" value="0.11574074074074074" />
         <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/content_main.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/dialog_list.xml" value="0.1" />
         <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/dialog_progress.xml" value="0.1" />
         <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/dialog_search_member.xml" value="0.1" />
         <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/item_board.xml" value="0.1" />
-        <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/item_card.xml" value="0.1" />
+        <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/item_card.xml" value="0.25" />
+        <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/item_card_selected_member.xml" value="0.1" />
         <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/item_member.xml" value="0.1" />
         <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/item_task.xml" value="0.25" />
         <entry key="..\:/Users/79119/AndroidStudioProjects/Projemanag/app/src/main/res/layout/main_content.xml" value="0.11574074074074074" />

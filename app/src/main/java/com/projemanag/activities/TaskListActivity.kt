@@ -14,8 +14,8 @@ import com.projemanag.firebase.FirestoreClass
 import com.projemanag.model.Board
 import com.projemanag.model.Card
 import com.projemanag.model.Task
+import com.projemanag.model.User
 import com.projemanag.utils.Constants
-import kotlinx.android.synthetic.main.activity_card_details.*
 import kotlinx.android.synthetic.main.activity_task_list_activite.*
 
 class TaskListActivity : BaseActivity() {
@@ -23,6 +23,7 @@ class TaskListActivity : BaseActivity() {
 
     private lateinit var mBoardDetails: Board
     private lateinit var mBoardDocumentId: String
+    lateinit var mAssignedMemberDetailList: ArrayList<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,14 +43,9 @@ class TaskListActivity : BaseActivity() {
         hideProgressDialog()
         setupActionBar()
 
-        val addTaskList = Task(resources.getString(R.string.add_list))
-        board.taskList.add(addTaskList)
-
-        rv_task_list.layoutManager = LinearLayoutManager(this,
-            LinearLayoutManager.HORIZONTAL, false)
-        rv_task_list.setHasFixedSize(true)
-        val adapter = TaskListItemsAdapter(this, board.taskList)
-        rv_task_list.adapter = adapter
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FirestoreClass().getAssignedMembersListDetails(
+            this, mBoardDetails.assignedTo)
     }
 
 
@@ -151,6 +147,7 @@ class TaskListActivity : BaseActivity() {
         intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
         intent.putExtra(Constants.TASK_LIST_ITEM_POSITION, taskListPosition)
         intent.putExtra(Constants.CARD_LIST_ITEM_POSITION, cardPosition)
+        intent.putExtra(Constants.BOARD_MEMBERS_LIST, mAssignedMemberDetailList)
         resultLauncher.launch(intent)
     }
 
@@ -163,4 +160,29 @@ class TaskListActivity : BaseActivity() {
             Log.e("Cancelled", "Cancelled")
         }
     }
+
+    fun boardMembersDetailsList(list: ArrayList<User>){
+        mAssignedMemberDetailList = list
+        hideProgressDialog()
+
+        val addTaskList = Task(resources.getString(R.string.add_list))
+        mBoardDetails.taskList.add(addTaskList)
+
+        rv_task_list.layoutManager = LinearLayoutManager(this,
+            LinearLayoutManager.HORIZONTAL, false)
+        rv_task_list.setHasFixedSize(true)
+        val adapter = TaskListItemsAdapter(this, mBoardDetails.taskList)
+        rv_task_list.adapter = adapter
+    }
+
+    fun updateCardsInTaskList(taskListPosition: Int, cards: ArrayList<Card>){
+        mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
+
+        mBoardDetails.taskList[taskListPosition].cards = cards
+
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails)
+    }
+
+
 }
